@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
 import React, { useState } from 'react';
 import { BookOpen, Download, Mail, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 
-const StudyMaterialsPortal = () => {
+export default function Home() {
   const [expandedSubject, setExpandedSubject] = useState(null);
   const [showContactForm, setShowContactForm] = useState(false);
   const [contactSubject, setContactSubject] = useState('');
@@ -46,12 +46,12 @@ const StudyMaterialsPortal = () => {
     setExpandedSubject(expandedSubject === subjectId ? null : subjectId);
   };
 
-const handleDownload = (subjectCode, moduleNum) => {
-  const link = document.createElement('a');
-  link.href = `/pdfs/${subjectCode}_Module${moduleNum}.pdf`;
-  link.download = `${subjectCode}_Module${moduleNum}.pdf`;
-  link.click();
-};
+  const handleDownload = (subjectCode, moduleNum) => {
+    const link = document.createElement('a');
+    link.href = `/pdfs/${subjectCode}_Module${moduleNum}.pdf`;
+    link.download = `${subjectCode}_Module${moduleNum}.pdf`;
+    link.click();
+  };
 
   const handleContactSubmit = () => {
     if (!contactSubject.trim() || !contactMessage.trim()) {
@@ -209,6 +209,4 @@ const handleDownload = (subjectCode, moduleNum) => {
       </footer>
     </div>
   );
-};
-
-export default StudyMaterialsPortal;
+}
