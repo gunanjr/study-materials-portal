@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/next"
 import { BookOpen, Download, Mail, FileText, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 
 export default function Home() {
