@@ -1,65 +1,214 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import React, { useState } from 'react';
+import { BookOpen, Download, Mail, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+
+const StudyMaterialsPortal = () => {
+  const [expandedSubject, setExpandedSubject] = useState(null);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactSubject, setContactSubject] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+
+  const subjects = [
+    {
+      id: 1,
+      code: 'BCS701',
+      name: 'Internet of Things',
+      modules: 5
+    },
+    {
+      id: 2,
+      code: 'BCS702',
+      name: 'Parallel Computing',
+      modules: 5
+    },
+    {
+      id: 3,
+      code: 'BCS703',
+      name: 'Cryptography and Network Security',
+      modules: 5
+    },
+    {
+      id: 4,
+      code: 'BCS714D',
+      name: 'Big Data Analytics',
+      modules: 5
+    },
+    {
+      id: 5,
+      code: 'BME755D',
+      name: 'Non-Conventional Energy Resources',
+      modules: 5
+    }
+  ];
+
+  const toggleSubject = (subjectId) => {
+    setExpandedSubject(expandedSubject === subjectId ? null : subjectId);
+  };
+
+const handleDownload = (subjectCode, moduleNum) => {
+  const link = document.createElement('a');
+  link.href = `/pdfs/${subjectCode}_Module${moduleNum}.pdf`;
+  link.download = `${subjectCode}_Module${moduleNum}.pdf`;
+  link.click();
+};
+
+  const handleContactSubmit = () => {
+    if (!contactSubject.trim() || !contactMessage.trim()) {
+      alert('Please fill in both subject and message fields');
+      return;
+    }
+    
+    window.location.href = `mailto:bollugunawanth@gmail.com?subject=${encodeURIComponent(contactSubject)}&body=${encodeURIComponent(contactMessage)}`;
+    
+    setContactSubject('');
+    setContactMessage('');
+    setShowContactForm(false);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-md">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="flex items-center gap-3">
+            <BookOpen className="w-8 h-8 text-indigo-600" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Semester Study Materials</h1>
+              <p className="text-gray-600 text-sm mt-1">Your one-stop resource for exam preparation</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <FileText className="w-6 h-6 text-indigo-600" />
+            Available Subjects
+          </h2>
+          <p className="text-gray-600 mb-6">Click on any subject to view and download module-wise PDFs</p>
+
+          <div className="space-y-4">
+            {subjects.map((subject) => (
+              <div key={subject.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleSubject(subject.id)}
+                  className="w-full px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 transition-colors flex items-center justify-between"
+                >
+                  <div className="text-left">
+                    <h3 className="text-lg font-semibold text-gray-800">{subject.name}</h3>
+                    <p className="text-sm text-gray-600">{subject.code}</p>
+                  </div>
+                  {expandedSubject === subject.id ? (
+                    <ChevronUp className="w-5 h-5 text-indigo-600" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-indigo-600" />
+                  )}
+                </button>
+
+                {expandedSubject === subject.id && (
+                  <div className="px-6 py-4 bg-white">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {[...Array(subject.modules)].map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleDownload(subject.code, index + 1)}
+                          className="flex items-center justify-between px-4 py-3 bg-white border-2 border-indigo-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-400 transition-all group"
+                        >
+                          <span className="font-medium text-gray-700 group-hover:text-indigo-700">
+                            Module {index + 1}
+                          </span>
+                          <Download className="w-5 h-5 text-indigo-600 group-hover:text-indigo-700" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Info Box */}
+        <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg mb-8">
+          <p className="text-indigo-900">
+            <strong>📚 All the best for your exams!</strong> These materials are provided to help you prepare effectively. 
+            If you have any handwritten notes or suggestions, feel free to reach out.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white mt-12">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-3">About</h3>
+              <p className="text-gray-300">
+                This portal is created to help students access study materials easily. 
+                All resources are organized by subject and module for your convenience.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-3">Contact & Contributions</h3>
+              <p className="text-gray-300 mb-4">
+                Have handwritten notes to share? Want to contribute materials? Get in touch!
+              </p>
+              {!showContactForm ? (
+                <button
+                  onClick={() => setShowContactForm(true)}
+                  className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                >
+                  <Mail className="w-5 h-5" />
+                  Contact Owner
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Subject"
+                    value={contactSubject}
+                    onChange={(e) => setContactSubject(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500"
+                  />
+                  <textarea
+                    placeholder="Your message..."
+                    rows="4"
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500"
+                  ></textarea>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleContactSubmit}
+                      className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                    >
+                      Send Email
+                    </button>
+                    <button
+                      onClick={() => setShowContactForm(false)}
+                      className="px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="mt-4 text-gray-400 text-sm">
+                <p>Owner: Gunawanth B</p>
+                <p>Email: bollugunawanth@gmail.com</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
+            <p>Made with ❤️ for classmates | Good luck with your exams! 🎓</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
-}
+};
+
+export default StudyMaterialsPortal;
