@@ -15,7 +15,7 @@ export default function Home() {
     { id: 2, code: 'BCS702', name: 'Parallel Computing', modules: 5, available: true },
     { id: 3, code: 'BCS703', name: 'Cryptography and Network Security', modules: 5, available: true },
     { id: 4, code: 'BCS714D', name: 'Big Data Analytics', modules: 5, available: true },
-    { id: 5, code: 'BME755D', name: 'Non-Conventional Energy Resources', modules: 5, available: false }
+    { id: 5, code: 'BME755D', name: 'Non-Conventional Energy Resources', modules: 5, available: true }
   ];
 
   const toggleSubject = (id) => {
